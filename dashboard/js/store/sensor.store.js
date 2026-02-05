@@ -18,3 +18,11 @@ export function getSensorSnapshot() {
   return snapshot;
 }
 window.__SENSORS__ = sensors;
+// 🔁 Update full sensor snapshot (from backend)
+export function updateSensorSnapshot(snapshot) {
+  if (!snapshot) return;
+
+  Object.entries(snapshot).forEach(([key, value]) => {
+    updateSensor(key, value);
+  });
+}

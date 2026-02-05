@@ -13,8 +13,11 @@ import { HistoryPage } from "./pages/history/history.page.js";
 import { HealthPage } from "./pages/health/health.page.js";
 import { AuditPage } from "./pages/audit.page.js";
 import { RecoveryPage } from "./pages/recovery.page.js";
+import { FarmsPage } from "./pages/farms.page.js";
+
 
 const routes = {
+  farms: FarmsPage,
   overview: OverviewPage,
   cow: CowPage,
   goat: GoatPage,
@@ -80,4 +83,8 @@ export function loadPage(pageName) {
       cleanupFn = maybeCleanup;
     }
   }
+}
+
+export function getCurrentPage() {
+  return currentPage;
 }

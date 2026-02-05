@@ -263,7 +263,6 @@
   font-size: 11px;
   font-weight: 600;
   cursor: help;
-  user-select: none;
 }
 
 .auto-badge.safe {
@@ -427,7 +426,6 @@
 
 .sev-toggle {
   cursor: pointer;
-  user-select: none;
 }
 
 .sev-toggle input {
@@ -1186,3 +1184,31 @@
 .toggle input:checked + .slider:before {
   transform: translateX(20px);
 }
+.alert-badge {
+  background: #dc2626;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+.topbar-alerts {
+  font-size: 14px;
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.topbar-alerts.ok {
+  color: #16a34a;
+}
+/* Subtle alignment */
+#topbar h3 { margin: 0; }
+
+/* Farm badge consistency */
+.farm-badge {
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* Alerts emphasis */
+.alert-badge { transform: translateY(-1px); }

@@ -13,6 +13,10 @@ import { sampleTrust } from "../health/trust.trend.engine.js";
 import { checkEarlyWarnings } from "../health/trust.warning.engine.js";
 import { buildTrustExplain } from "../explain/trust.explain.builder.js";
 import { saveTrustExplain } from "../explain/explain.store.js";
+import { syncAlerts } from "../api/alerts.api.js";
+import { syncSensors } from "../api/sensors.api.js";
+import { syncDevices } from "../api/devices.api.js";
+
 
 const state = {
   status: "idle",
@@ -105,6 +109,11 @@ export async function bootstrapSystem() {
     setInterval(() => {
     decayActionWeights();
     }, 10 * 60 * 1000);
+
+    // 🔁 Dashboard live sync (DEV safe)
+    setInterval(syncDevices, 5000);
+    setInterval(syncSensors, 3000);
+    setInterval(syncAlerts, 7000);
 
     } catch (err) {
     state.status = "failed";

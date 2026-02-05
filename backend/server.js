@@ -2,6 +2,22 @@ const express = require('express');
 const fs = require('fs');
 const app = express();
 
+// ===== CORS (DEV MODE – ALLOW ALL) =====
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, X-Farm-Id"
+  );
+
+  // handle preflight
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 app.use(express.json());
 
@@ -59,8 +75,8 @@ function updateDeviceStatus() {
 }
 
 /*function authenticate(req, res, next) {
-
-  const { username, password } = req.headers;
+  const username = req.headers["x-user"];
+  const password = req.headers["x-pass"];
 
   const user = store.users?.[username];
 
@@ -70,7 +86,17 @@ function updateDeviceStatus() {
 
   req.user = user;
   next();
-}*/
+}
+  function allowRoles(...roles) {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+    next();
+  };
+}
+
+*/
 
 // ---------------- COMMAND QUEUE ----------------
 function queueCommand(deviceId, action, source = 'MANUAL') {
@@ -205,6 +231,33 @@ app.post("/api/ota/:deviceId", (req, res) => {
   });
 });
 
+app.post("/api/ota/:deviceId", (req, res) => {
+  // existing OTA logic
+});
+
+app.get("/api/mobile/farm/:farmId", (req, res) => {
+  // existing snapshot logic
+});
+
+app.post("/api/devices/:id/command", (req, res) => {
+  // existing command logic
+});
+
+// ===== DEV ONLY: inject fake sensor data =====
+app.post("/api/dev/fake-sensor/:deviceId", (req, res) => {
+  const { deviceId } = req.params;
+
+  store.sensorData[deviceId] = {
+    temperature: 27 + Math.random() * 3,
+    humidity: 55 + Math.random() * 10,
+    soil_moisture: 35 + Math.random() * 10
+  };
+
+  saveStore();
+  res.json({ success: true, deviceId, sensorData: store.sensorData[deviceId] });
+});
+
+
 // pull commands
 app.get('/api/devices/:id/commands', (req, res) => {
   const id = req.params.id;
@@ -272,6 +325,92 @@ app.get("/api/ota/:deviceId", (req, res) => {
 
   res.json(store.ota[deviceId]);
 });
+
+// ================= DASHBOARD APIs =================
+
+// 📋 Dashboard Devices (Farm-wise)
+app.get("/api/dashboard/devices", (req, res) => {
+  const farmId = req.headers["x-farm-id"];
+  if (!farmId) return res.json([]);
+
+  const devices = Object.values(store.devices)
+    .filter(d => d.farmId === farmId)
+    .map(d => ({
+      deviceId: d.deviceId,
+      status: d.status,
+      lastSeen: d.lastSeen
+    }));
+
+  res.json(devices);
+});
+
+// 🌡 Dashboard Sensors (Farm-wise aggregate)
+app.get("/api/dashboard/sensors", (req, res) => {
+  const farmId = req.headers["x-farm-id"];
+  if (!farmId) return res.json({});
+
+  const devices = Object.values(store.devices)
+    .filter(d => d.farmId === farmId)
+    .map(d => d.deviceId);
+
+  const agg = { temperature: null, humidity: null, soil_moisture: null };
+  let count = 0;
+
+  devices.forEach(id => {
+    const s = store.sensorData[id];
+    if (!s) return;
+
+    agg.temperature = (agg.temperature ?? 0) + (s.temperature ?? 0);
+    agg.humidity = (agg.humidity ?? 0) + (s.humidity ?? 0);
+    agg.soil_moisture = (agg.soil_moisture ?? 0) + (s.soil_moisture ?? 0);
+    count++;
+  });
+
+  if (count > 0) {
+    agg.temperature /= count;
+    agg.humidity /= count;
+    agg.soil_moisture /= count;
+  }
+
+  res.json(agg);
+});
+
+// 🚨 Dashboard Alerts (Derived, Farm-wise)
+app.get("/api/dashboard/alerts", (req, res) => {
+  const farmId = req.headers["x-farm-id"];
+  if (!farmId) return res.json([]);
+
+  const alerts = [];
+
+  // OFFLINE devices → critical alert
+  Object.values(store.devices).forEach(d => {
+    if (d.farmId === farmId && d.status === "OFFLINE") {
+      alerts.push({
+        id: "OFFLINE-" + d.deviceId,
+        type: "critical",
+        message: `Device ${d.deviceId} is offline`,
+        time: Date.now()
+      });
+    }
+  });
+
+  // Failed commands → warning alert
+  Object.values(store.commandQueue).forEach(cmds => {
+    cmds.forEach(c => {
+      if (c.status === "FAILED") {
+        alerts.push({
+          id: c.id,
+          type: "warning",
+          message: `Command failed: ${c.action}`,
+          time: c.lastTriedAt || c.createdAt
+        });
+      }
+    });
+  });
+
+  res.json(alerts);
+});
+
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');

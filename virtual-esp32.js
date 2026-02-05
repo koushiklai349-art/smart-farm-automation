@@ -81,3 +81,27 @@ client.on("message", (topic, payload) => {
     })
   );
 });
+
+client.subscribe(`${BASE}/ota`);
+
+client.on("message", (topic, payload) => {
+  if (topic.endsWith("/ota")) {
+    const ota = JSON.parse(payload.toString());
+
+    console.log("🧩 OTA received:", ota);
+
+    // simulate OTA delay
+    setTimeout(() => {
+      client.publish(
+        `${BASE}/ack`,
+        JSON.stringify({
+          device_id: DEVICE_ID,
+          cmdId: `OTA-${ota.version}`,
+          status: "SUCCESS"
+        })
+      );
+
+      console.log("✅ OTA update simulated");
+    }, 4000);
+  }
+});

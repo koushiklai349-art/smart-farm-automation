@@ -1,5 +1,6 @@
 import { notifyUI, subscribe } from "./store/store.notifier.js";
-
+import { farmAlerts } from "./store/alerts.farm.adapter.js";
+import { farmMetrics } from "./store/metrics.farm.adapter.js";
 
 
 export const store = {
@@ -12,10 +13,10 @@ export const store = {
   feedStatus: "ok",
   power: "solar",
 
-  alerts: [
-    { id: 1, type: "critical", message: "Water level low in Fish Pond", time: "10:12 AM" },
-    { id: 2, type: "warning", message: "Feed stock running low", time: "09:40 AM" }
-  ],
+  get alerts() {
+  return farmAlerts.getAll();
+  },
+
 
   logs: [
     { time: "10:15 AM", source: "Fish Sensor", message: "Water level = 22%" },
@@ -23,11 +24,8 @@ export const store = {
     { time: "09:50 AM", source: "Automation", message: "Feed motor stopped" }
   ],
 
-  metrics: {
-  temperature: null,
-  humidity: null,
-  soil_moisture: null,
-  source: null
+  get metrics() {
+  return farmMetrics.get();
   },
 
 
@@ -98,3 +96,13 @@ export const store = {
 store.subscribe = subscribe;
 store.notify = notifyUI;
 
+// ✅ Farm-aware alert helpers
+store.addAlert = function (alert) {
+  const evt = new CustomEvent("farm:add-alert", { detail: alert });
+  window.dispatchEvent(evt);
+};
+
+store.clearAlerts = function () {
+  const evt = new Event("farm:clear-alerts");
+  window.dispatchEvent(evt);
+};
