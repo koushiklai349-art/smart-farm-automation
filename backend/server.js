@@ -156,24 +156,6 @@ app.post('/api/devices/:id/command', (req, res) => {
   res.json({ success: true });
 });
 
-// pull commands
-app.get('/api/devices/:id/commands', (req, res) => {
-  const id = req.params.id;
-  const cmds = store.commandQueue[id] || [];
-  const send = [];
-
-  cmds.forEach(c => {
-    if (c.status === 'PENDING') {
-      c.status = 'SENT';
-      c.lastTriedAt = new Date().toISOString();
-      send.push(c);
-    }
-  });
-
-  saveStore();
-  res.json(send);
-});
-
 // command result
 app.post('/api/devices/:id/command-result', (req, res) => {
   const { commandId, result } = req.body;
@@ -194,6 +176,51 @@ app.post('/api/devices/:id/command-result', (req, res) => {
 
   saveStore();
   res.json({ success: true });
+});
+// 🚀 OTA UPDATE TRIGGER
+app.post("/api/ota/:deviceId", (req, res) => {
+  const { deviceId } = req.params;
+  const { version, url } = req.body;
+
+  if (!store.devices[deviceId]) {
+    return res.status(404).json({ error: "Device not found" });
+  }
+
+  store.ota = store.ota || {};
+  store.ota[deviceId] = {
+    currentVersion: store.ota?.[deviceId]?.currentVersion || "unknown",
+    targetVersion: version,
+    url,
+    status: "PENDING",
+    requestedAt: new Date().toISOString()
+  };
+
+  saveStore();
+
+  res.json({
+    success: true,
+    message: "OTA scheduled",
+    deviceId,
+    version
+  });
+});
+
+// pull commands
+app.get('/api/devices/:id/commands', (req, res) => {
+  const id = req.params.id;
+  const cmds = store.commandQueue[id] || [];
+  const send = [];
+
+  cmds.forEach(c => {
+    if (c.status === 'PENDING') {
+      c.status = 'SENT';
+      c.lastTriedAt = new Date().toISOString();
+      send.push(c);
+    }
+  });
+
+  saveStore();
+  res.json(send);
 });
 
 // 📊 METRICS
@@ -235,6 +262,16 @@ app.get("/api/mobile/farm/:farmId", (req, res) => {
   });
 });
 
+// 📡 OTA STATUS
+app.get("/api/ota/:deviceId", (req, res) => {
+  const { deviceId } = req.params;
+
+  if (!store.ota || !store.ota[deviceId]) {
+    return res.json({ status: "NO_OTA" });
+  }
+
+  res.json(store.ota[deviceId]);
+});
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');

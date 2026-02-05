@@ -23,18 +23,38 @@ client.on("message", (topic, payload) => {
 
   const store = JSON.parse(fs.readFileSync(STORE_FILE));
 
+  
   // ACK
-  if (topic.endsWith("/ack")) {
-    const { device_id, cmdId, status } = data;
-    const cmds = store.commandQueue?.[device_id] || [];
-    const cmd = cmds.find(c => c.id === cmdId);
-    if (!cmd) return;
+if (topic.endsWith("/ack")) {
+  const { device_id, cmdId, status } = data;
 
-    cmd.status = status === "SUCCESS" ? "DONE" : "FAILED";
-    cmd.acked = true;
+  // OTA ACK
+  if (cmdId && cmdId.startsWith("OTA-")) {
+    const version = cmdId.replace("OTA-", "");
 
-    console.log(`✅ ACK from ${device_id}`);
+    store.ota = store.ota || {};
+    store.ota[device_id] = store.ota[device_id] || {};
+
+    if (status === "SUCCESS") {
+      store.ota[device_id].status = "DONE";
+      store.ota[device_id].currentVersion = version;
+      store.ota[device_id].lastUpdate = new Date().toISOString();
+      store.ota[device_id].targetVersion = null;
+
+      console.log(`🎉 OTA DONE for ${device_id} → v${version}`);
+    } else {
+      store.ota[device_id].status = "FAILED";
+      store.ota[device_id].errorAt = new Date().toISOString();
+
+      console.log(`❌ OTA FAILED for ${device_id}`);
+    }
+
+    fs.writeFileSync(STORE_FILE, JSON.stringify(store, null, 2));
+    return;
   }
+
+  // (existing command ACK logic stays)
+}
 
   // TELEMETRY
   if (topic.endsWith("/telemetry")) {
@@ -52,3 +72,31 @@ client.on("message", (topic, payload) => {
 
   fs.writeFileSync(STORE_FILE, JSON.stringify(store, null, 2));
 });
+
+function publishOTACommands() {
+  const store = JSON.parse(fs.readFileSync(STORE_FILE));
+
+  Object.entries(store.ota || {}).forEach(([deviceId, ota]) => {
+    if (ota.status !== "PENDING") return;
+
+    const payload = {
+      type: "OTA",
+      version: ota.targetVersion,
+      url: ota.url
+    };
+
+    client.publish(
+      `smartfarm/${deviceId}/ota`,
+      JSON.stringify(payload)
+    );
+
+    ota.status = "SENT";
+    ota.sentAt = new Date().toISOString();
+
+    console.log(`🚀 OTA sent to ${deviceId}`);
+  });
+
+  fs.writeFileSync(STORE_FILE, JSON.stringify(store, null, 2));
+}
+
+setInterval(publishOTACommands, 5000);

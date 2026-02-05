@@ -162,5 +162,14 @@
     "heatStressTemp": 32,
     "humidityDanger": 85,
     "rapidTempChange": 5
+  },
+  "ota": {
+  "esp32_001": {
+    "currentVersion": "1.0.0",
+    "targetVersion": null,
+    "status": "IDLE",
+    "lastUpdate": null
   }
+}
+
 }
