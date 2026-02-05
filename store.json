@@ -20,7 +20,19 @@
   },
   "cloudSyncQueue": [],
   "commandQueue": {},
-  "sensorData": {},
+  "sensorData": {
+    "esp32_001": {
+      "device_id": "esp32_001",
+      "temperature": 25.068069587183047,
+      "humidity": 56.604029294802295,
+      "water_level": 56.67327286393221,
+      "soil_moisture": 47.27446612721494,
+      "pump": "OFF",
+      "fan": "OFF",
+      "water_pump": "OFF",
+      "receivedAt": "2026-02-05T22:20:51.415Z"
+    }
+  },
   "rules": [
     {
       "id": "rule_smart_irrigation",
