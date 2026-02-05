@@ -1,0 +1,2 @@
+source C:/Users/HP/OneDrive/Desktop/smart-farm-automation/esp32-firmware/build/bootloader/gdbinit/symbols
+source C:/Users/HP/OneDrive/Desktop/smart-farm-automation/esp32-firmware/build/bootloader/gdbinit/connect

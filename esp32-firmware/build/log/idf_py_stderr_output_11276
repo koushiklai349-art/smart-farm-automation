@@ -1,0 +1,11 @@
+Command: ninja all
+CMake Error at C:/Espressif/frameworks/esp-idf-v5.5.2/tools/cmake/component.cmake:319 (message):
+  Include directory
+  'C:/Users/HP/OneDrive/Desktop/smart-farm-automation/esp32-firmware/drivers'
+  is not a directory.
+Call Stack (most recent call first):
+  C:/Espressif/frameworks/esp-idf-v5.5.2/tools/cmake/component.cmake:494 (__component_add_include_dirs)
+  main/CMakeLists.txt:1 (idf_component_register)
+
+
+ninja: error: rebuilding 'build.ninja': subcommand failed

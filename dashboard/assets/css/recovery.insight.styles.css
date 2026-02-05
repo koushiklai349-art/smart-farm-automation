@@ -1,0 +1,41 @@
+/* dashboard/js/components/recovery.insight.styles.css */
+
+.recovery-insight-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.recovery-insight-card {
+  background: #fff;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.insight-icon {
+  font-size: 24px;
+}
+
+.insight-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.insight-title {
+  font-size: 13px;
+  color: #555;
+}
+
+.insight-value {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.insight-subtitle {
+  font-size: 12px;
+  color: #777;
+}

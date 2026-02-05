@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart Farm Dashboard</title>
+  
+  <link rel="icon" href="data:,">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+
+<body>
+  <div id="global-skeleton">
+  <div class="loader"></div>
+  </div>
+
+  <!-- APP ROOT -->
+  <div id="app">
+
+    <!-- LEFT SIDEBAR -->
+    <aside id="sidebar">
+      Sidebar
+    </aside>
+
+    <!-- RIGHT CONTENT -->
+    <main>
+
+      <!-- TOP BAR -->
+     <header id="topbar" style="display:flex;justify-content:space-between;align-items:center;">
+
+  <div>
+    Smart Farm Dashboard
+  </div>
+
+  <!-- ❤️ HEARTBEAT UI (এইখানেই থাকবে, আর কোথাও না) -->
+  <div id="engine-heartbeat" style="display:flex;gap:6px;"></div>
+
+</header>
+  <!-- 🔑 PAGE OUTLET (REQUIRED FOR ROUTER) -->
+  <div id="page-container"></div>
+
+    </main>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script type="module" src="./js/app.js"></script>
+
+
+</body>
+</html>

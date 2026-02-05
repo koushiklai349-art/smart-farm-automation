@@ -1,0 +1,18 @@
+.alert-row {
+  padding: 8px;
+  margin: 6px 0;
+  border-radius: 4px;
+  font-family: sans-serif;
+}
+
+.alert-row.info {
+  background: #e7f3ff;
+}
+
+.alert-row.warning {
+  background: #fff4d6;
+}
+
+.alert-row.critical {
+  background: #ffe1e1;
+}

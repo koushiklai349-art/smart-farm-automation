@@ -1,0 +1,11 @@
+{
+  "command_id": "uuid",
+  "device_id": "string",
+  "device_type": "cow|fish|goat|poultry",
+  "command": "TURN_ON|TURN_OFF|SET_LEVEL|REBOOT",
+  "params": {
+    "value": "number|string|boolean"
+  },
+  "issued_at": "timestamp",
+  "priority": "LOW|NORMAL|HIGH|CRITICAL"
+}

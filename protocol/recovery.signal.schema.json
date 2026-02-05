@@ -1,0 +1,6 @@
+{
+  "device_id": "string",
+  "action": "ENTER_SAFE_MODE|RESET_SENSOR|REBOOT",
+  "reason": "string",
+  "issued_by": "AUTO|OPERATOR|PLAYBOOK"
+}

@@ -1,0 +1,21 @@
+{
+  "devices": {},
+  "commandQueue": {},
+  "sensorData": {},
+  "rules": [],
+  "schedules": [],
+  "commandHistory": {},
+  "auditLogs": [],
+  "metrics": {
+    "commandsSent": 0,
+    "commandsSuccess": 0,
+    "commandsFailed": 0,
+    "devicesOnline": 0,
+    "devicesOffline": 0
+  },
+  "config": {
+    "maxRetries": 3,
+    "retryAfterSec": 20,
+    "offlineHold": true
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "device_id": "string",
+  "timestamp": "timestamp",
+  "metrics": {
+    "temperature": "number",
+    "humidity": "number",
+    "power": "number"
+  },
+  "health": "OK|WARN|CRITICAL",
+  "uptime_sec": "number"
+}

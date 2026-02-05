@@ -1,0 +1,7 @@
+{
+  "device_id": "string",
+  "state": "ON|OFF|ERROR|SAFE",
+  "last_command_id": "uuid",
+  "ack": "SUCCESS|FAILED|RETRYING",
+  "reason": "string"
+}

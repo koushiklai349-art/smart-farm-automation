@@ -1,0 +1,8 @@
+Command: cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=C:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe -DESP_PLATFORM=1 -DCCACHE_ENABLE=1 C:\Users\HP\OneDrive\Desktop\smart-farm-automation\esp32-firmware
+CMake Error at C:/Espressif/tools/cmake/3.30.2/share/cmake-3.30/Modules/CMakeTestCCompiler.cmake:80 (configure_file):
+  Permission denied
+Call Stack (most recent call first):
+  C:/Espressif/frameworks/esp-idf-v5.5.2/tools/cmake/project.cmake:589 (__project)
+  CMakeLists.txt:8 (project)
+
+

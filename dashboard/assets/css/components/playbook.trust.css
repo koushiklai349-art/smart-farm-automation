@@ -1,0 +1,110 @@
+.action-btn.trusted {
+  border-color: #2e7d32;
+  background: #e8f5e9;
+}
+
+.action-btn.neutral {
+  border-color: #f9a825;
+  background: #fffde7;
+}
+
+.action-btn.risky {
+  border-color: #c62828;
+  background: #ffebee;
+}
+
+.action-btn small {
+  display: block;
+  font-size: 11px;
+  opacity: 0.8;
+}
+/* 🧠 Explain UX */
+.explain-toggle-btn {
+  margin-top: 6px;
+  font-size: 11px;
+  padding: 4px 8px;
+  background: #f5f5f5;
+  border: 1px dashed #999;
+  cursor: pointer;
+}
+
+.explain-toggle-btn:hover {
+  background: #eee;
+}
+
+.action-explain {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #fafafa;
+  border-left: 3px solid #90caf9;
+  font-size: 12px;
+  display: none;
+}
+
+.action-explain.open {
+  display: block;
+  animation: fadeSlide 0.25s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 🚨 Risk badge */
+.risk-badge {
+  margin-left: 6px;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.risk-low {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.risk-medium {
+  background: #fffde7;
+  color: #f9a825;
+}
+
+.risk-high {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* 🧠 Explain rule chip */
+.explain-rule {
+  font-size: 11px;
+  margin-bottom: 4px;
+  color: #555;
+}
+.risk-badge.suppressed {
+  background: #eeeeee;
+  color: #555;
+  border: 1px dashed #999;
+}
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.action-btn.suppressed {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.suppressed-badge {
+  background: #b71c1c;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 6px;
+}

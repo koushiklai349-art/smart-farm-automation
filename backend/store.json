@@ -1,0 +1,154 @@
+{
+  "devices": {
+    "esp32_001": {
+      "deviceId": "esp32_001",
+      "type": "ESP32",
+      "location": "Test Farm",
+      "lastSeen": "2026-02-05T07:00:00.000Z",
+      "status": "OFFLINE",
+      "recovered": true,
+      "farmId": "farm_001",
+      "species": "cow"
+    }
+  },
+  "farms": {
+    "farm_001": {
+      "name": "Main Livestock Farm",
+      "location": "Test Region",
+      "devices": {}
+    }
+  },
+  "cloudSyncQueue": [],
+  "commandQueue": {},
+  "sensorData": {},
+  "rules": [
+    {
+      "id": "rule_smart_irrigation",
+      "deviceId": "esp32_001",
+      "conditions": [
+        {
+          "sensor": "soil_moisture",
+          "operator": "<",
+          "value": 45
+        },
+        {
+          "sensor": "temperature",
+          "operator": ">",
+          "value": 28
+        }
+      ],
+      "logic": "AND",
+      "target": "pump",
+      "value": "ON",
+      "priority": 1,
+      "enabled": true
+    }
+  ],
+  "schedules": [
+    {
+      "id": "morning_irrigation_on",
+      "deviceId": "esp32_001",
+      "time": "06:00",
+      "action": {
+        "target": "pump",
+        "value": "ON"
+      },
+      "enabled": true
+    },
+    {
+      "id": "morning_irrigation_off",
+      "deviceId": "esp32_001",
+      "time": "06:20",
+      "action": {
+        "target": "pump",
+        "value": "OFF"
+      },
+      "enabled": true
+    }
+  ],
+  "feedingSchedules": [
+    {
+      "id": "cow_feed_morning",
+      "deviceId": "esp32_001",
+      "time": "07:00",
+      "action": {
+        "target": "feeder",
+        "value": "ON"
+      },
+      "enabled": true
+    },
+    {
+      "id": "cow_feed_evening",
+      "deviceId": "esp32_001",
+      "time": "18:00",
+      "action": {
+        "target": "feeder",
+        "value": "ON"
+      },
+      "enabled": true
+    }
+  ],
+  "commandHistory": {},
+  "auditLogs": [],
+  "metrics": {
+    "commandsSent": 0,
+    "commandsSuccess": 0,
+    "commandsFailed": 0,
+    "devicesOnline": 0,
+    "devicesOffline": 1
+  },
+  "speciesProfiles": {
+    "cow": {
+      "maxTemp": 26,
+      "minTemp": 18,
+      "fanControl": true,
+      "minWaterLevel": 30
+    },
+    "poultry": {
+      "maxTemp": 34,
+      "minTemp": 28,
+      "fanControl": true,
+      "lightControl": true
+    },
+    "goat": {
+      "maxTemp": 30,
+      "minTemp": 20,
+      "fanControl": true
+    },
+    "fish": {
+      "maxWaterTemp": 30,
+      "minWaterTemp": 22,
+      "aeratorControl": true
+    }
+  },
+  "behaviourCache": {},
+  "analytics": {
+    "temperatureHistory": {},
+    "waterHistory": {}
+  },
+  "aiPredictions": {},
+  "farmScore": {},
+  "recommendations": {},
+  "financials": {},
+  "actuatorState": {
+    "esp32_001": {
+      "pump": "OFF"
+    }
+  },
+  "overrideMode": {
+    "esp32_001": {
+      "pump": "AUTO"
+    }
+  },
+  "config": {
+    "maxRetries": 3,
+    "retryAfterSec": 20,
+    "offlineHold": true,
+    "maintenanceMode": false
+  },
+  "alerts": {
+    "heatStressTemp": 32,
+    "humidityDanger": 85,
+    "rapidTempChange": 5
+  }
+}

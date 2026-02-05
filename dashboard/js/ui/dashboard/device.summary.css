@@ -1,0 +1,26 @@
+.device-row {
+  padding: 8px;
+  margin: 6px 0;
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 1fr 100px 120px 80px;
+  gap: 8px;
+  font-family: sans-serif;
+}
+
+.device-row.online {
+  background: #e9ffe9;
+}
+
+.device-row.warning {
+  background: #fff6da;
+}
+
+.device-row.offline {
+  background: #ffe3e3;
+}
+
+.device-row .status {
+  font-weight: bold;
+}
+

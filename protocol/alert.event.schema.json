@@ -1,0 +1,7 @@
+{
+  "device_id": "string",
+  "alert_type": "SENSOR_FAIL|POWER_DROP|OVERHEAT",
+  "severity": "LOW|MEDIUM|HIGH|CRITICAL",
+  "message": "string",
+  "timestamp": "timestamp"
+}
