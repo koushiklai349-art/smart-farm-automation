@@ -1,10 +1,12 @@
 const express = require('express');
 const fs = require('fs');
 const app = express();
+const path = require("path");
 
 app.use(express.json());
 
-const STORE_FILE = './store.json';
+const STORE_FILE = path.join(__dirname, "store.json");
+
 const OFFLINE_AFTER_SEC = 30;
 
 // ---------------- LOAD / SAVE ----------------
