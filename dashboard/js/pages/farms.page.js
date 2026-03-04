@@ -30,9 +30,14 @@ window.onFarmsMounted = function () {
     card.addEventListener("click", () => {
       const id = card.dataset.id;
       console.log("FARM CLICKED:", id);
+
+      // 1️⃣ set active farm
       farmContext.set(id);
+
+      // 2️⃣ move to overview
       loadPage("overview");
     });
   });
 };
+
 

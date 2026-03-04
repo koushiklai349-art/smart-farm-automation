@@ -1,7 +1,16 @@
-import { apiGet } from "./api.client.js";
-import { updateSensorSnapshot } from "../store/sensor.store.js";
+import { apiGet, isApiOnline } from "./api.client.js";
+import { updateSensor } from "../store/sensor.store.js";
 
 export async function syncSensors() {
-  const snap = await apiGet("/sensors");
-  updateSensorSnapshot(snap);
+  if (!isApiOnline()) return;
+
+  try {
+    const data = await apiGet("/sensors");
+
+    Object.entries(data).forEach(([key, value]) => {
+      updateSensor(key, value);
+    });
+  } catch {
+    // silent
+  }
 }

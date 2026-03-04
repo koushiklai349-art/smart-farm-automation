@@ -1,0 +1,35 @@
+# Node
+node_modules/
+npm-debug.log
+.env
+
+# Backend runtime
+backend/node_modules/
+backend/.env
+
+# ESP32 build
+esp32-firmware/build/
+esp32-firmware/sdkconfig.old
+
+# Logs
+*.log
+log/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.tmp
+*.cache
+
+# VSCode
+.vscode/
+
+# binaries
+*.bin
+*.elf
+*.map
+*.a
+*.o
+*.obj

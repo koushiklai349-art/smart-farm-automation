@@ -1,0 +1,46 @@
+[
+  {
+    "id": "60446c5b-cb62-4c5b-9e2e-8560d1ad8383",
+    "deviceId": "esp32_001",
+    "firmwareVersion": "1.0.0",
+    "mac": "AA:BB:CC",
+    "capabilities": [
+      "fan"
+    ],
+    "status": "online",
+    "assigned": true,
+    "config": {
+      "mode": "MANUAL",
+      "pins": {},
+      "rules": [],
+      "schedules": [],
+      "safety": {
+        "maxRunSec": 20
+      }
+    },
+    "lastSeen": null,
+    "createdAt": 1772227009699,
+    "controllerClass": "climate",
+    "location": {
+      "farmId": "farm-01",
+      "zoneId": "zone-A",
+      "shedId": "shed-A",
+      "lineId": "line-01"
+    }
+  },
+  {
+    "id": "esp32_002",
+    "deviceId": "esp32_002",
+    "status": "online",
+    "config": {
+      "mode": "AUTO"
+    },
+    "location": {
+      "lineId": "line-01"
+    },
+    "capabilities": [
+      "fan",
+      "pump"
+    ]
+  }
+]

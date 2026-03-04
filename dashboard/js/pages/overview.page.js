@@ -390,33 +390,9 @@ if (store.subscribe) {
       renderStabilityPanel("stability-panel");
     });
   }
-    // 🔁 Re-render overview on sensor updates
-  if (store.subscribe) {
-    store.subscribe(() => {
-      rerenderOverview();
-    });
-  }
   // 🌡 Live sensor updates
  let sensorRenderTimer = null;
 
-window.addEventListener("sensor:update", () => {
-  if (sensorRenderTimer) return;
-
-  sensorRenderTimer = setTimeout(() => {
-    rerenderOverview();
-    sensorRenderTimer = null;
-  }, 300); // 300ms debounce
-});
-
-}
-
-
-function rerenderOverview() {
-  const container = document.getElementById("page-container");
-  if (!container) return;
-
-  container.innerHTML = OverviewPage();
-  onOverviewMounted();
 }
 
 function renderDeviceList() {
@@ -431,14 +407,27 @@ function renderDeviceList() {
   }
 
   el.innerHTML = devices
-    .map(d => `
-      <li style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
-        <span>${d.status === "online" ? "🟢" : "🔴"}</span>
-        <strong>${d.deviceId}</strong>
-        <small style="opacity:.6;">
-          last seen ${Math.round((Date.now() - d.lastSeen)/1000)}s ago
-        </small>
-      </li>
-    `)
-    .join("");
+  .map(d => `
+    <li 
+      data-device-id="${d.deviceId}"
+      class="device-row"
+      style="display:flex;gap:8px;align-items:center;
+             margin-bottom:6px;cursor:pointer;"
+    >
+      <span>${d.status === "online" ? "🟢" : "🔴"}</span>
+      <strong>${d.deviceId}</strong>
+      <small style="opacity:.6;">
+        last seen ${Math.round((Date.now() - d.lastSeen)/1000)}s ago
+      </small>
+    </li>
+  `)
+  .join("");
+
+el.querySelectorAll(".device-row").forEach(row => {
+  row.addEventListener("click", () => {
+    const id = row.dataset.deviceId;
+    loadPage(`device/${id}`);
+  });
+});
+
 }

@@ -6,33 +6,49 @@
       "location": "Test Farm",
       "lastSeen": "2026-02-05T07:00:00.000Z",
       "status": "OFFLINE",
-      "recovered": true,
-      "farmId": "farm_001",
+      "farmId": "farm-1",
       "species": "cow"
+    },
+    "DEV-001": {
+      "deviceId": "DEV-001",
+      "farmId": "farm-1",
+      "species": "cow",
+      "location": "Shed-A",
+      "lastSeen": "2026-02-06T15:02:04.539Z",
+      "status": "OFFLINE"
     }
   },
+
   "farms": {
-    "farm_001": {
+    "farm-1": {
       "name": "Main Livestock Farm",
-      "location": "Test Region",
-      "devices": {}
+      "location": "Test Region"
     }
   },
-  "cloudSyncQueue": [],
-  "commandQueue": {},
+
+  "commandQueue": {
+    "DEV-001": []
+  },
+
+  "commandHistory": {
+    "DEV-001": []
+  },
+
   "sensorData": {
     "esp32_001": {
-      "device_id": "esp32_001",
-      "temperature": 25.068069587183047,
-      "humidity": 56.604029294802295,
-      "water_level": 56.67327286393221,
-      "soil_moisture": 47.27446612721494,
-      "pump": "OFF",
-      "fan": "OFF",
-      "water_pump": "OFF",
+      "temperature": 25.06,
+      "humidity": 56.60,
+      "soil_moisture": 47.27,
       "receivedAt": "2026-02-05T22:20:51.415Z"
+    },
+    "DEV-001": {
+      "temperature": 29.49,
+      "humidity": 56.29,
+      "soil_moisture": 41.81,
+      "receivedAt": "2026-02-06T15:02:04.539Z"
     }
   },
+
   "rules": [
     {
       "id": "rule_smart_irrigation",
@@ -56,59 +72,41 @@
       "enabled": true
     }
   ],
+
   "schedules": [
     {
       "id": "morning_irrigation_on",
       "deviceId": "esp32_001",
       "time": "06:00",
-      "action": {
-        "target": "pump",
-        "value": "ON"
-      },
+      "action": { "target": "pump", "value": "ON" },
       "enabled": true
     },
     {
       "id": "morning_irrigation_off",
       "deviceId": "esp32_001",
       "time": "06:20",
-      "action": {
-        "target": "pump",
-        "value": "OFF"
-      },
+      "action": { "target": "pump", "value": "OFF" },
       "enabled": true
     }
   ],
+
   "feedingSchedules": [
     {
       "id": "cow_feed_morning",
       "deviceId": "esp32_001",
       "time": "07:00",
-      "action": {
-        "target": "feeder",
-        "value": "ON"
-      },
+      "action": { "target": "feeder", "value": "ON" },
       "enabled": true
     },
     {
       "id": "cow_feed_evening",
       "deviceId": "esp32_001",
       "time": "18:00",
-      "action": {
-        "target": "feeder",
-        "value": "ON"
-      },
+      "action": { "target": "feeder", "value": "ON" },
       "enabled": true
     }
   ],
-  "commandHistory": {},
-  "auditLogs": [],
-  "metrics": {
-    "commandsSent": 0,
-    "commandsSuccess": 0,
-    "commandsFailed": 0,
-    "devicesOnline": 0,
-    "devicesOffline": 1
-  },
+
   "speciesProfiles": {
     "cow": {
       "maxTemp": 26,
@@ -133,43 +131,44 @@
       "aeratorControl": true
     }
   },
-  "behaviourCache": {},
-  "analytics": {
-    "temperatureHistory": {},
-    "waterHistory": {}
-  },
-  "aiPredictions": {},
-  "farmScore": {},
-  "recommendations": {},
-  "financials": {},
-  "actuatorState": {
-    "esp32_001": {
-      "pump": "OFF"
-    }
-  },
-  "overrideMode": {
-    "esp32_001": {
-      "pump": "AUTO"
-    }
-  },
-  "config": {
-    "maxRetries": 3,
-    "retryAfterSec": 20,
-    "offlineHold": true,
-    "maintenanceMode": false
-  },
+
   "alerts": {
     "heatStressTemp": 32,
     "humidityDanger": 85,
     "rapidTempChange": 5
   },
-  "ota": {
-  "esp32_001": {
-    "currentVersion": "1.0.0",
-    "targetVersion": null,
-    "status": "IDLE",
-    "lastUpdate": null
-  }
-}
 
+  "ota": {
+    "esp32_001": {
+      "currentVersion": "1.0.0",
+      "targetVersion": null,
+      "status": "IDLE",
+      "lastUpdate": null
+    }
+  },
+
+  "users": {
+    "admin1": {
+      "password": "admin123",
+      "role": "ADMIN",
+      "farmId": "farm-1"
+    },
+    "worker1": {
+      "password": "worker123",
+      "role": "WORKER",
+      "farmId": "farm-1"
+    },
+    "vet1": {
+      "password": "vet123",
+      "role": "VET",
+      "farmId": "farm-1"
+    }
+  },
+
+  "config": {
+    "maxRetries": 3,
+    "retryAfterSec": 20,
+    "offlineHold": true,
+    "maintenanceMode": false
+  }
 }

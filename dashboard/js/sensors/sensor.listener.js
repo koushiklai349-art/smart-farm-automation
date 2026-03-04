@@ -2,7 +2,8 @@ import { runRuleEngine } from "../rule-engine/rule.engine.js";
 import { deviceStore } from "../devices/device.store.js";
 import { updateSensor } from "../store/sensor.store.js";
 import { evaluateRules } from "../rule-engine/rule.engine.js";
-import { getSensorSnapshot } from "../store/sensor.store.js";
+import { getSensorSnapshot } from "../store/sensor.store.farm.js";
+
 
 export function onSensorData(sensorType, value) {
   console.log("SENSOR:", sensorType, value);

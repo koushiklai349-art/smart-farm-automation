@@ -2,11 +2,18 @@
 #include "nvs_flash.h"
 #include "esp_system.h"
 #include "recovery_manager.h"
+#include "state_manager.h"
+#include "config.h"
+#include "mqtt_service.h"
+#include "command_handler.h"
 
 void system_init(void)
 {
-    nvs_flash_init();
-
+    nvs_flash_init();        // 🔑 FIRST
+    state_manager_init();    // now safe
+    command_handler_init();
+    mqtt_service_init();
+   
     recovery_manager_init();
 
     esp_reset_reason_t reason = esp_reset_reason();

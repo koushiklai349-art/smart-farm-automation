@@ -1,9 +1,12 @@
 #include "mqtt_service.h"
 #include "mqtt_config.h"
 #include "telemetry_builder.h"
-#include "command_handler.h"
 #include "esp_log.h"
+#include <stdio.h>
+#include "registration_client.h"
 
+void handle_command_json(const char *json);
+void mqtt_publish(const char *topic, const char *payload);
 
 static const char *TAG = "MQTT_SERVICE";
 
@@ -31,10 +34,16 @@ void mqtt_publish_telemetry(void)
 #endif
 }
 
-
+void mqtt_service_on_connected(void)
+{
+    registration_client_start();
+}
 
 void mqtt_handle_incoming(const char *payload)
+
 {
+    if (!payload) return;
+
     ESP_LOGI(TAG, "Incoming payload: %s", payload);
     handle_command_json(payload);
 }
@@ -48,7 +57,18 @@ void mqtt_service_start(void)
     ESP_LOGW(TAG, "MQTT start skipped (disabled)");
 #endif
 }
+// publishes command ACK to backend (mock / real MQTT)
 
+void send_ack(const char* commandId, const char* status)
+{
+    char payload[128];
+    snprintf(payload, sizeof(payload),
+        "{ \"commandId\":\"%s\", \"status\":\"%s\" }",
+        commandId, status
+    );
+
+    mqtt_publish(TOPIC_ACK, payload);
+}
 
 
 

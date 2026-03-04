@@ -1,17 +1,19 @@
-import { apiGet } from "./api.client.js";
+import { apiGet, isApiOnline } from "./api.client.js";
 import { store } from "../store.js";
 
 export async function syncAlerts() {
-  const list = await apiGet("/alerts");
+  if (!isApiOnline()) return;
 
-  // clear existing alerts safely
-  store.alerts.length = 0;
+  try {
+    const list = await apiGet("/alerts");
 
-  list.forEach(a => {
-    store.alerts.push(a);
-  });
+    store.alerts.length = 0;
+    list.forEach(a => store.alerts.push(a));
 
-  if (store.notify) {
-    store.notify();
+    store.notify?.();
+  } catch {
+    // silent
   }
 }
+
+

@@ -6,6 +6,8 @@ idf_component_register(
         "../services/telemetry_builder.c"
         "../services/sensor_fake.c"
         "../services/rule_engine.c"
+        "../services/command_handler.c"
+        "../services/system_stubs.c"
 
     INCLUDE_DIRS
         "."
@@ -14,4 +16,5 @@ idf_component_register(
     REQUIRES
         esp_system
         log
+        json
 )

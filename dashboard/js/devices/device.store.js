@@ -13,7 +13,7 @@ export const deviceStore = {
       ...prev,
       ...state,
       lastSeen: Date.now(),
-      status: "online"
+      status: state.status || prev.status || "online"
     };
 
     devices.set(deviceId, next);

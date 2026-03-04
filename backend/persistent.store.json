@@ -1,0 +1,41 @@
+{
+  "farms": {},
+  "devices": {
+    "esp32_001": {
+      "deviceId": "esp32_001",
+      "farmId": "farm-01",
+      "lineId": null,
+      "species": "broiler",
+      "location": "shed-A"
+    },
+    "esp32_002": {
+      "deviceId": "esp32_002",
+      "farmId": "farm-01",
+      "lineId": null
+    }
+  },
+  "rules": [],
+  "schedules": [],
+  "feedingSchedules": [],
+  "speciesProfiles": {},
+  "users": {},
+  "alerts": {},
+  "ota": {},
+  "config": {
+    "maxRetries": 3,
+    "retryAfterSec": 20,
+    "offlineHold": true
+  },
+  "controllerInstances": {
+    "ESP32-MOCK-1": {
+      "id": "ESP32-MOCK-1",
+      "controllerClassId": "poultry_feedline_v1",
+      "hardwareUid": "HW-MOCK-001",
+      "lineId": "LINE-1",
+      "status": "online",
+      "registeredAt": 1770618147956,
+      "lastSeenAt": 1770627563295,
+      "meta": {}
+    }
+  }
+}

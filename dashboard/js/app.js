@@ -2,7 +2,6 @@ import { bootstrapSystem } from "./system/system.bootstrap.js";
 import { loadSidebar, initSidebar } from "./components/sidebar.js";
 import { loadTopbar } from "./components/topbar.js";
 import { renderHeartbeatIndicator } from "./components/engine.heartbeat.indicator.js";
-import "./ui/dashboard/alert.list.js";
 import "./ui/dashboard/engine.restart.history.view.js";
 import { store } from "./store.js";
 import { initSystemStatusBar,updateSystemStatusFromStore} from "./components/system.status.bar.js";

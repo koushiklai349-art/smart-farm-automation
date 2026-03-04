@@ -14,10 +14,12 @@ import { HealthPage } from "./pages/health/health.page.js";
 import { AuditPage } from "./pages/audit.page.js";
 import { RecoveryPage } from "./pages/recovery.page.js";
 import { FarmsPage } from "./pages/farms.page.js";
+import { DevicePage } from "./pages/device.page.js";
 
 
 const routes = {
   farms: FarmsPage,
+  device: DevicePage,
   overview: OverviewPage,
   cow: CowPage,
   goat: GoatPage,
@@ -39,6 +41,8 @@ let currentPage = null;
 let cleanupFn = null;
 
 export function loadPage(pageName) {
+  console.log("[ROUTER] loadPage called with:", pageName);
+
   if (!pageName || pageName === currentPage) return;
 
   // cleanup previous page (if any)
@@ -55,27 +59,37 @@ export function loadPage(pageName) {
   return;
   }
 
-  const pageFn = routes[pageName];
-  if (!pageFn) {
-    container.innerHTML = `<p>Page not found</p>`;
-    return;
-  }
+ let pageKey = pageName;
+ let params = null;
 
-  const html = pageFn();
-  container.innerHTML = html || `
+// support dynamic routes like device/DEV-001
+if (pageName.includes("/")) {
+  const parts = pageName.split("/");
+  pageKey = parts[0];
+  params = { id: parts[1] };
+}
+console.log("[ROUTER] resolved pageKey:", pageKey, "params:", params);
+const pageFn = routes[pageKey];
+if (!pageFn) {
+  container.innerHTML = `<p>Page not found</p>`;
+  return;
+}
+
+const html = pageFn(params);
+container.innerHTML = html || `
   <section class="page placeholder">
-    <h1>${pageName}</h1>
+    <h1>${pageKey}</h1>
     <p>Page loaded, content coming soon…</p>
   </section>
-  `;
+`;
 
+  // mount hook
+ const hook =
+  "on" +
+  pageKey.charAt(0).toUpperCase() +
+  pageKey.slice(1) +
+  "Mounted";
 
-  // mount hook (no setTimeout)
-  const hook =
-    "on" +
-    pageName.charAt(0).toUpperCase() +
-    pageName.slice(1) +
-    "Mounted";
 
   if (typeof window[hook] === "function") {
     const maybeCleanup = window[hook]();

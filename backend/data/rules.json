@@ -1,0 +1,31 @@
+[
+  {
+    "ruleId": "temp-high-fan",
+    "deviceId": "esp32_001",
+    "sensor": "temperature",
+    "lowThreshold": 0,
+    "highThreshold": 30,
+    "target": "fan",
+    "priority": 1,
+    "enabled": true,
+    "createdAt": "2026-02-27T20:16:28.088Z",
+    "lastTriggeredAt": "2026-03-01T20:53:06.053Z",
+    "cooldownMs": 30000,
+    "autoTune": false
+  },
+  {
+    "ruleId": "temp-high-fan",
+    "deviceId": "esp32_001",
+    "sensor": "temperature",
+    "lowThreshold": 0,
+    "highThreshold": 30,
+    "baseHighThreshold": 30,
+    "target": "fan",
+    "priority": 1,
+    "enabled": true,
+    "createdAt": "2026-03-01T20:59:16.862Z",
+    "lastTriggeredAt": null,
+    "cooldownMs": 30000,
+    "autoTune": false
+  }
+]

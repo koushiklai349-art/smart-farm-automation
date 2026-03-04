@@ -1,0 +1,32 @@
+{
+  "arbitrationWeights": {
+    "FARM_BRAIN_GLOBAL_COOLING": 0
+  },
+  "trustIndex": {
+    "reasons": {},
+    "devices": {
+      "esp32_001": {
+        "score": 41,
+        "lastUpdated": 1772483112740
+      },
+      "esp32_002": {
+        "score": 69,
+        "lastUpdated": 1772483112740
+      }
+    },
+    "engines": {
+      "FARM_BRAIN_GLOBAL_COOLING": {
+        "score": 5,
+        "lastUpdated": 1772483112740
+      }
+    },
+    "lastEvaluated": 1772483112741
+  },
+  "strategy": {
+    "mode": "NORMAL",
+    "lastChanged": null,
+    "lastUpdated": 1772483112747,
+    "reason": "STABLE"
+  },
+  "savedAt": 1772483112768
+}

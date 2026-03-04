@@ -1,417 +1,401 @@
-const express = require('express');
-const fs = require('fs');
-const app = express();
+require("dotenv").config();
+const connectDB = require("./db");
+connectDB();
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+const bodyParser = require("body-parser");
+const devicesRoutes = require("./api/devices.routes");
+const controllersRoutes = require("./api/controllers.routes");
+const rulesRoutes = require("./api/rules.routes");
+const { bootstrapSystem } = require("./bootstrap/system.bootstrap");
+const { setAiMode } = require("./services/runtime.service");
+const { setEnergyLimit } = require("./services/runtime.service");
+const { setDigitalTwinMode } = require("./services/runtime.service");
+const authRoutes = require("./api/auth.routes");
+const rateLimit = require("express-rate-limit");
+const farmRoutes = require("./api/farm.routes");
+const zoneRoutes = require("./api/zone.routes");
+const shedRoutes = require("./api/shed.routes");
+const lineRoutes = require("./api/line.routes");
+const controllerClassRoutes = require("./api/controllerClass.routes");
+const controllerInstanceRoutes = require("./api/controllerInstance.routes");
+const commandRoutes = require("./api/command.routes");
+const { startAckListener } = require("./phase-b/integration/device.ack.handler");
+const ControllerInstance = require("./models/controllerInstance.model");
+const Command = require("./models/Command.model");
+const { startMockDevice } = require("./phase-c/mqtt/mqtt.mock.device");
+const alertRoutes = require("./api/alert.routes");
+const startScheduleMonitor = require("./services/scheduleMonitor.service");
+const maintenanceRoutes = require("./api/maintenance.routes");
+const { recoverCommandsOnStartup } = require("./services/restart.recovery.service");
+const { cleanStaleActiveLocks } = require("./services/command.orchestrator.service");
+const riskRoutes = require("./api/risk.routes");
+const { startCloudSync } = require("./services/cloud.sync.scheduler");
 
-// ===== CORS (DEV MODE – ALLOW ALL) =====
+require("./phase-c/mqtt/mqtt.mock.device");
+// ================= APP =================
+const app = express();
+app.use(express.json());
+app.use(bodyParser.json());
+
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60, // max 60 requests per minute per IP
+  message: { error: "TOO_MANY_REQUESTS" }
+});
+
+app.use(limiter);
+
+// ================= CORS (DEV SAFE) =================
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header(
+  res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,OPTIONS"
+  );
+  res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type, X-Farm-Id"
   );
-
-  // handle preflight
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
+  if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
 });
 
-app.use(express.json());
+// ================= CORE IMPORTS =================
+const { addRule } = require("./store/rule.store");
+const { loadRuntime } = require("./store/runtime.persistence");
+const { assignLine } = require("./store/line.store");
+const { runSimulation } = require("./phase-f/simulation/simulation.engine");
+const { simulateDevice } = require("./phase-g/twin/digital.twin.engine");
+const { getRulesForDevice } = require("./store/rule.store");
+const { handleDeviceTelemetry } = require("./phase-e/handlers/device.telemetry.handler");
+const startControllerMonitor = require("./services/controllerMonitor.service.js");
 
-const STORE_FILE = './store.json';
+const { runtime } = require("./store/runtime.store.js");
+const { createRule,getAllRules } = require("./controllers/rule.controller");
+const { persistent } = require("./store/persistent.store.js");
 
-const OFFLINE_AFTER_SEC = 30;
+loadRuntime();
+// ================= CONSTANTS =================
+const PORT = 3000;
+const FARM_ID = "farm-01";
+const DEVICE_ID = "esp32_001";
 
-// ---------------- LOAD / SAVE ----------------
-let store = {
-  devices: {}, commandQueue: {}, sensorData: {},
-  rules: [], schedules: [], commandHistory: {},
-  auditLogs: [],
-  metrics: {
-    commandsSent: 0,
-    commandsSuccess: 0,
-    commandsFailed: 0,
-    devicesOnline: 0,
-    devicesOffline: 0
-  },
-  config: { maxRetries: 3, retryAfterSec: 20, offlineHold: true }
-};
+// ================= DEVICE REGISTRATION =================
 
-if (fs.existsSync(STORE_FILE)) {
-  store = JSON.parse(fs.readFileSync(STORE_FILE));
-}
+app.use("/api/devices", devicesRoutes);
+app.use("/api/controllers", controllersRoutes);
+app.use("/api/rules", rulesRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/farms", farmRoutes);
+app.use("/api/zones", zoneRoutes);
+app.use("/api/sheds", shedRoutes);
+app.use("/api/lines", lineRoutes);
+app.use("/api/controller-classes", controllerClassRoutes);
+app.use("/api/controller-instances", controllerInstanceRoutes);
+app.use("/api/commands", commandRoutes);
+app.use("/api/alerts", alertRoutes);
+app.use("/api/maintenance-mode", maintenanceRoutes);
+app.use("/api/risk", riskRoutes);
 
-function saveStore() {
-  fs.writeFileSync(STORE_FILE, JSON.stringify(store, null, 2));
-}
-
-// ---------------- AUDIT ----------------
-function audit(event, payload = {}) {
-  store.auditLogs.push({
-    event,
-    payload,
-    time: new Date().toISOString()
-  });
-  saveStore();
-}
-
-// ---------------- DEVICE STATUS ----------------
-function updateDeviceStatus() {
-  let online = 0, offline = 0;
-  const now = Date.now();
-
-  Object.values(store.devices).forEach(d => {
-    const last = new Date(d.lastSeen).getTime();
-    d.status = (now - last) / 1000 > OFFLINE_AFTER_SEC ? 'OFFLINE' : 'ONLINE';
-    d.status === 'ONLINE' ? online++ : offline++;
-  });
-
-  store.metrics.devicesOnline = online;
-  store.metrics.devicesOffline = offline;
-  saveStore();
-}
-
-/*function authenticate(req, res, next) {
-  const username = req.headers["x-user"];
-  const password = req.headers["x-pass"];
-
-  const user = store.users?.[username];
-
-  if (!user || user.password !== password) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  req.user = user;
-  next();
-}
-  function allowRoles(...roles) {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ error: "Forbidden" });
-    }
-    next();
-  };
-}
-
-*/
-
-// ---------------- COMMAND QUEUE ----------------
-function queueCommand(deviceId, action, source = 'MANUAL') {
-  if (!store.commandQueue[deviceId]) store.commandQueue[deviceId] = [];
-  const cmd = {
-    id: Date.now() + '-' + Math.random(),
-    action,
-    source,
-    retries: 0,
-    status: 'PENDING',
-    createdAt: new Date().toISOString()
-  };
-  store.commandQueue[deviceId].push(cmd);
-  store.metrics.commandsSent++;
-  audit('COMMAND_QUEUED', cmd);
-  saveStore();
-}
-
-// ---------------- RECOVERY ----------------
-function recoveryLoop() {
-  Object.entries(store.commandQueue).forEach(([deviceId, cmds]) => {
-    cmds.forEach(cmd => {
-      if (cmd.status !== 'FAILED') return;
-      if (cmd.retries >= store.config.maxRetries) return;
-
-      const last = new Date(cmd.lastTriedAt || cmd.createdAt).getTime();
-      if ((Date.now() - last) / 1000 >= store.config.retryAfterSec) {
-        cmd.retries++;
-        cmd.status = 'PENDING';
-        audit('COMMAND_RETRY', cmd);
-      }
-    });
-  });
-  saveStore();
-}
-
-// ---------------- LOOPS ----------------
-setInterval(updateDeviceStatus, 20000);
-setInterval(recoveryLoop, 10000);
-
-// ---------------- APIs ----------------
-
-// register
-app.post('/api/devices/register', (req, res) => {
-  const d = req.body;
-  store.devices[d.deviceId] = {
-    ...d,
-    lastSeen: new Date().toISOString(),
-    status: 'ONLINE'
-  };
-  store.commandQueue[d.deviceId] = store.commandQueue[d.deviceId] || [];
-  store.commandHistory[d.deviceId] = store.commandHistory[d.deviceId] || [];
-  audit('DEVICE_REGISTERED', d);
-  saveStore();
-  res.json({ success: true });
+app.get("/", (req, res) => {
+  res.send("FCOS Industrial Backend Running 🚀");
+});
+// ================= METRICS =================
+app.get("/api/metrics", (req, res) => {
+  res.json(runtime.metrics || {});
 });
 
-// heartbeat
-app.post('/api/devices/:id/heartbeat', (req, res) => {
-  const id = req.params.id;
-  store.devices[id].lastSeen = new Date().toISOString();
-  store.devices[id].status = 'ONLINE';
-  audit('HEARTBEAT', { deviceId: id });
-  saveStore();
-  res.json({ success: true });
-});
-
-// send command
-app.post('/api/devices/:id/command', (req, res) => {
-  const id = req.params.id;
-    if (!store.devices[id]) {
-    return res.status(404).json({
-      success: false,
-      message: "Device not registered"
-    });
-  }
-
-  if (store.devices[id].status === 'OFFLINE' && store.config.offlineHold) {
-    audit('COMMAND_HELD_OFFLINE', { deviceId: id });
-    return res.json({ success: false, message: 'Device offline' });
-  }
-  queueCommand(id, req.body.action, req.body.source || 'MANUAL');
-  res.json({ success: true });
-});
-
-// command result
-app.post('/api/devices/:id/command-result', (req, res) => {
-  const { commandId, result } = req.body;
-  const list = store.commandQueue[req.params.id] || [];
-  const cmd = list.find(c => c.id === commandId);
-
-  if (!cmd) return res.json({ success: false });
-
-  if (result === 'OK') {
-    cmd.status = 'DONE';
-    store.metrics.commandsSuccess++;
-    audit('COMMAND_SUCCESS', cmd);
-  } else {
-    cmd.status = 'FAILED';
-    store.metrics.commandsFailed++;
-    audit('COMMAND_FAILED', cmd);
-  }
-
-  saveStore();
-  res.json({ success: true });
-});
-// 🚀 OTA UPDATE TRIGGER
-app.post("/api/ota/:deviceId", (req, res) => {
-  const { deviceId } = req.params;
-  const { version, url } = req.body;
-
-  if (!store.devices[deviceId]) {
-    return res.status(404).json({ error: "Device not found" });
-  }
-
-  store.ota = store.ota || {};
-  store.ota[deviceId] = {
-    currentVersion: store.ota?.[deviceId]?.currentVersion || "unknown",
-    targetVersion: version,
-    url,
-    status: "PENDING",
-    requestedAt: new Date().toISOString()
-  };
-
-  saveStore();
-
-  res.json({
-    success: true,
-    message: "OTA scheduled",
-    deviceId,
-    version
-  });
-});
-
-app.post("/api/ota/:deviceId", (req, res) => {
-  // existing OTA logic
-});
-
-app.get("/api/mobile/farm/:farmId", (req, res) => {
-  // existing snapshot logic
-});
-
-app.post("/api/devices/:id/command", (req, res) => {
-  // existing command logic
-});
-
-// ===== DEV ONLY: inject fake sensor data =====
-app.post("/api/dev/fake-sensor/:deviceId", (req, res) => {
-  const { deviceId } = req.params;
-
-  store.sensorData[deviceId] = {
-    temperature: 27 + Math.random() * 3,
-    humidity: 55 + Math.random() * 10,
-    soil_moisture: 35 + Math.random() * 10
-  };
-
-  saveStore();
-  res.json({ success: true, deviceId, sensorData: store.sensorData[deviceId] });
-});
-
-
-// pull commands
-app.get('/api/devices/:id/commands', (req, res) => {
-  const id = req.params.id;
-  const cmds = store.commandQueue[id] || [];
-  const send = [];
-
-  cmds.forEach(c => {
-    if (c.status === 'PENDING') {
-      c.status = 'SENT';
-      c.lastTriedAt = new Date().toISOString();
-      send.push(c);
-    }
-  });
-
-  saveStore();
-  res.json(send);
-});
-
-// 📊 METRICS
-app.get('/api/metrics', (req, res) => {
-  res.json(store.metrics);
-});
-
-// 📜 AUDIT LOGS
-app.get('/api/audit-logs', (req, res) => {
-  res.json(store.auditLogs.slice(-100)); // last 100
-});
-
-// 📱 MOBILE DASHBOARD SNAPSHOT
-app.get("/api/mobile/farm/:farmId", (req, res) => {
-
-  const farmId = req.params.farmId;
-
-  const devices = Object.values(store.devices)
-    .filter(d => d.farmId === farmId);
-
-  const snapshot = devices.map(device => {
-
-    const id = device.deviceId;
-
-    return {
-      deviceId: id,
-      species: device.species,
-      sensorData: store.sensorData[id] || {},
-      score: store.farmScore?.[id] || {},
-      aiPrediction: store.aiPredictions?.[id] || {},
-      recommendation: store.recommendations?.[id] || {},
-      financial: store.financials?.[id] || {}
-    };
-  });
-
-  res.json({
-    farmId,
-    devices: snapshot
-  });
-});
-
-// 📡 OTA STATUS
-app.get("/api/ota/:deviceId", (req, res) => {
-  const { deviceId } = req.params;
-
-  if (!store.ota || !store.ota[deviceId]) {
-    return res.json({ status: "NO_OTA" });
-  }
-
-  res.json(store.ota[deviceId]);
-});
-
-// ================= DASHBOARD APIs =================
-
-// 📋 Dashboard Devices (Farm-wise)
+// ================= DASHBOARD =================
 app.get("/api/dashboard/devices", (req, res) => {
   const farmId = req.headers["x-farm-id"];
   if (!farmId) return res.json([]);
 
-  const devices = Object.values(store.devices)
+  const devices = Object.values(persistent.devices || {})
     .filter(d => d.farmId === farmId)
     .map(d => ({
       deviceId: d.deviceId,
-      status: d.status,
-      lastSeen: d.lastSeen
+      status: runtime.devices?.[d.deviceId]?.status || "OFFLINE",
+      lastSeen: runtime.devices?.[d.deviceId]?.lastSeen
     }));
 
   res.json(devices);
 });
 
-// 🌡 Dashboard Sensors (Farm-wise aggregate)
-app.get("/api/dashboard/sensors", (req, res) => {
-  const farmId = req.headers["x-farm-id"];
-  if (!farmId) return res.json({});
+// ================= DASHBOARD SNAPSHOT =================
+app.get("/api/dashboard/farm/:farmId/snapshot", (req, res) => {
+  const farmId = req.params.farmId;
 
-  const devices = Object.values(store.devices)
+  const devices = Object.values(persistent.devices || {})
     .filter(d => d.farmId === farmId)
-    .map(d => d.deviceId);
+    .map(d => {
+      const rt = runtime.devices?.[d.deviceId] || {};
+      const tel = runtime.telemetry?.[d.deviceId] || {};
 
-  const agg = { temperature: null, humidity: null, soil_moisture: null };
-  let count = 0;
+      return {
+        deviceId: d.deviceId,
+        status: rt.status || "OFFLINE",
+        lastSeen: rt.lastSeen || null,
+        telemetry: tel.sensors || {}
+      };
+    });
 
-  devices.forEach(id => {
-    const s = store.sensorData[id];
-    if (!s) return;
-
-    agg.temperature = (agg.temperature ?? 0) + (s.temperature ?? 0);
-    agg.humidity = (agg.humidity ?? 0) + (s.humidity ?? 0);
-    agg.soil_moisture = (agg.soil_moisture ?? 0) + (s.soil_moisture ?? 0);
-    count++;
+  res.json({
+    farmId,
+    devices
   });
-
-  if (count > 0) {
-    agg.temperature /= count;
-    agg.humidity /= count;
-    agg.soil_moisture /= count;
-  }
-
-  res.json(agg);
 });
 
-// 🚨 Dashboard Alerts (Derived, Farm-wise)
-app.get("/api/dashboard/alerts", (req, res) => {
-  const farmId = req.headers["x-farm-id"];
-  if (!farmId) return res.json([]);
+const { getRules } = require("./store/rule.store");
 
-  const alerts = [];
+if (!getRules().some(r => r.ruleId === "temp-high-fan" && r.baseHighThreshold)) {
+  addRule({
+    ruleId: "temp-high-fan",
+    deviceId: "esp32_001",
+    sensor: "temperature",
+    lowThreshold: 0,
+    highThreshold: 30,
+    baseHighThreshold: 30,
+    priority: 1,
+    enabled: true
+  });
+}
+app.post("/api/rules", createRule);
+app.get("/api/rules", getAllRules);
 
-  // OFFLINE devices → critical alert
-  Object.values(store.devices).forEach(d => {
-    if (d.farmId === farmId && d.status === "OFFLINE") {
-      alerts.push({
-        id: "OFFLINE-" + d.deviceId,
-        type: "critical",
-        message: `Device ${d.deviceId} is offline`,
-        time: Date.now()
-      });
-    }
+app.post("/api/lines/assign", (req, res) => {
+  const { lineId, controllerId } = req.body;
+
+  if (!lineId || !controllerId) {
+    return res.status(400).json({ error: "INVALID_PAYLOAD" });
+  }
+
+  assignLine(lineId, controllerId);
+
+  res.json({
+    success: true,
+    message: `Controller ${controllerId} added to ${lineId}`
+  });
+});
+
+app.get("/api/health", (req, res) => {
+  res.json(runtime.health);
+});
+
+app.get("/api/alerts", (req, res) => {
+  res.json(runtime.alerts);
+});
+
+app.get("/api/maintenance", (req, res) => {
+  res.json(runtime.maintenance);
+});
+app.get("/api/analytics/:deviceId", (req, res) => {
+
+  const { deviceId } = req.params;
+
+  const data =
+    runtime.caches.analytics.historical;
+
+  res.json({
+    telemetry: data.telemetry?.[deviceId] || [],
+    health: data.health?.[deviceId] || [],
+    risk: data.risk?.[deviceId] || []
+  });
+});
+
+app.get("/api/ranking", (req, res) => {
+  res.json(runtime.caches.analytics.ranking);
+});
+
+app.get("/api/optimization", (req, res) => {
+  res.json(runtime.optimization);
+});
+
+app.post("/api/ai-mode", (req, res) => {
+  const { enabled } = req.body;
+
+  const result = setAiMode(enabled);
+
+  res.json({
+    success: true,
+    aiMode: result
+  });
+});
+
+app.get("/api/season", (req, res) => {
+  res.json(runtime.season);
+});
+
+app.get("/api/energy", (req, res) => {
+  res.json(runtime.energy);
+});
+
+app.post("/api/energy/limit", (req, res) => {
+  const { limit } = req.body;
+
+  const result = setEnergyLimit(limit);
+
+  res.json({
+    success: true,
+    energy: result
+  });
+});
+
+app.post("/api/simulate", async (req, res) => {
+
+  const { deviceId, sensors } = req.body;
+
+  await handleDeviceTelemetry({
+    device_id: deviceId,
+    temperature: sensors.temperature,
+    humidity: sensors.humidity,
+    soil_moisture: sensors.soil_moisture
   });
 
-  // Failed commands → warning alert
-  Object.values(store.commandQueue).forEach(cmds => {
-    cmds.forEach(c => {
-      if (c.status === "FAILED") {
-        alerts.push({
-          id: c.id,
-          type: "warning",
-          message: `Command failed: ${c.action}`,
-          time: c.lastTriedAt || c.createdAt
-        });
+  res.json({
+    simulated: true,
+    deviceId
+  });
+});
+
+app.get("/api/explain", (req, res) => {
+  res.json(runtime.explainability.history);
+});
+
+app.get("/api/incidents", (req, res) => {
+
+  const { severity } = req.query;
+
+  let list = runtime.incidents.history;
+
+  if (severity)
+    list = list.filter(i => i.severity === severity);
+
+  res.json({
+    total: list.length,
+    incidents: list
+  });
+});
+
+app.get("/api/predictive/:deviceId", (req, res) => {
+  const { deviceId } = req.params;
+
+  const risk =
+    runtime.predictive?.devices?.[deviceId];
+
+  res.json({
+    deviceId,
+    riskScore: risk ?? 0
+  });
+});
+
+app.get("/api/predictive-trend/:deviceId", (req, res) => {
+  const { deviceId } = req.params;
+
+  const trend =
+    runtime.caches.analytics.historical.risk?.[deviceId] || [];
+
+  res.json({
+    deviceId,
+    recentRisk: trend.slice(-5)
+  });
+});
+
+app.get("/api/adaptive/:deviceId", (req, res) => {
+
+  const { deviceId } = req.params;
+
+  const data =
+    runtime.adaptive?.devices?.[deviceId] || null;
+
+  res.json({
+    deviceId,
+    adaptive: data
+  });
+});
+
+app.get("/api/confidence/:deviceId", (req, res) => {
+  const { deviceId } = req.params;
+
+  const confidence =
+    runtime.confidence?.devices?.[deviceId] ?? 0;
+
+  res.json({
+    deviceId,
+    confidence
+  });
+});
+
+app.post("/api/twin/simulate", (req, res) => {
+
+  const { deviceId, telemetry } = req.body;
+
+  const rules = getRulesForDevice(deviceId);
+
+  const result = simulateDevice(deviceId, telemetry, rules);
+
+  res.json(result);
+});
+
+app.post("/api/twin/enable", (req, res) => {
+  const result = setDigitalTwinMode(true);
+  res.json({ status: "Digital Twin Mode Enabled", twin: result });
+});
+
+app.post("/api/twin/disable", (req, res) => {
+  const result = setDigitalTwinMode(false);
+  res.json({ status: "Digital Twin Mode Disabled", twin: result });
+});
+// ================= UTIL =================
+function cryptoId() {
+  return (
+    Date.now().toString(36) +
+    "-" +
+    Math.random().toString(36).slice(2)
+  );
+}
+// ================= START SERVER =================
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+
+  bootstrapSystem(app, {
+    farmId: FARM_ID,
+    deviceId: DEVICE_ID
+  });
+
+  startControllerMonitor();
+  startScheduleMonitor();
+  recoverCommandsOnStartup();
+  startCloudSync();
+  setInterval(() => {
+  cleanStaleActiveLocks();
+  }, 15000);
+  ControllerInstance.find().then(instances => {
+    instances.forEach(instance => {
+      startAckListener(instance.deviceId);
+      console.log(`👂 ACK listener started for ${instance.deviceId}`);
+    });
+  });
+
+  // 🔁 Restart Recovery
+  Command.find({ status: "sent" }).then(commands => {
+    const now = Date.now();
+
+    commands.forEach(cmd => {
+      const age = now - new Date(cmd.updatedAt).getTime();
+
+      if (age > 15000) {
+        console.log(`🔁 Recovering stuck command ${cmd.commandId}`);
+        cmd.status = "failed";
+        cmd.failureReason = "RECOVERED_AFTER_RESTART";
+        cmd.save();
       }
     });
   });
 
-  res.json(alerts);
-});
-
-
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+  if (process.env.MQTT_MODE === "mock") {
+    startMockDevice("esp32_feed_01");
+    console.log("🤖 Mock device started for esp32_feed_01");
+  }
 });

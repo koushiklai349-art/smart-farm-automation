@@ -13,7 +13,8 @@
 #define SIM_TIME_COMPRESS     0   // faster loop timing
 
 // -------- TIMING --------
-#define TELEMETRY_INTERVAL_MS  10000
+#define TELEMETRY_INTERVAL_MS  5000
+#define HEARTBEAT_INTERVAL_MS 10000
 
 // ===== Firmware Identity =====
 #define FW_NAME        "ESP32_SMART_FARM"

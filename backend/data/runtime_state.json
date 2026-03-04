@@ -1,0 +1,9 @@
+{
+  "actuatorState": {
+    "esp32_001": {
+      "fan": "ON"
+    }
+  },
+  "commandCooldown": {},
+  "flipProtection": {}
+}

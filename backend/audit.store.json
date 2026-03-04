@@ -1,0 +1,584 @@
+{
+  "auditLogs": [
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "ESP32-MOCK-1",
+        "lineId": "LINE-1",
+        "commandId": "CMD-MOCK-001",
+        "action": "START_FEED",
+        "signature": "8ef0ecdba84bb2a54d891e9c78ab91647195bbbcb1c3155e827c918c66fdfd82"
+      },
+      "time": "2026-02-09T08:59:23.297Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5eu15b-hkhzg6waxiv",
+        "action": "FAN_ON",
+        "signature": "5220d5e0f5f0f7d5f4e8695aace0c57cf3a8cb55b842bb3d37b9b8b74066bd75"
+      },
+      "time": "2026-02-27T21:34:28.192Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5f2aen-n80351ibhsp",
+        "action": "FAN_ON",
+        "signature": "3fa454236af808c295bd0eb29a6e37bcf3b12e73191c1c6df98b037e9b01a082"
+      },
+      "time": "2026-02-27T21:40:53.426Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5gqodl-pg0j8li5zh9",
+        "action": "FAN_ON",
+        "signature": "aa29a7d573e7596959ab9f599ecc7e670376550d91a204edf494f818084dc1da"
+      },
+      "time": "2026-02-27T22:27:50.896Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5gr09u-65269509lb9",
+        "action": "FAN_ON",
+        "signature": "ccc7fc3886e34fa4905f0bba4a65c228e8abcd06f948f12d698265ec72cb46cd"
+      },
+      "time": "2026-02-27T22:28:06.309Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5grn22-9c4o3pqg03a",
+        "action": "FAN_OFF",
+        "signature": "0a6998fda0301bc08d3f26cf1e0721dd4f8ee16bfbb6f59faf52e69aa410045a"
+      },
+      "time": "2026-02-27T22:28:35.836Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5h7v3k-1grnfrhk8g8",
+        "action": "FAN_ON",
+        "signature": "f9b6735c17ca8077e5a93f447468d993d65225f04a5322a23499425dbf6117e0"
+      },
+      "time": "2026-02-27T22:41:12.757Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5h890t-i8eqgj86vk",
+        "action": "FAN_ON",
+        "signature": "54f32d0b41011863756b5f32e4717b15fb2801848a458030a60cb908bf8c41c2"
+      },
+      "time": "2026-02-27T22:41:30.799Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5h8qt6-9ctqazijue5",
+        "action": "FAN_OFF",
+        "signature": "f3bb449980922566440fe2e46b47d3b9c8f698fc4a24101d496f63e47a968233"
+      },
+      "time": "2026-02-27T22:41:53.852Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm5hehvf-tygyksqo8z8",
+        "action": "FAN_ON",
+        "signature": "9aa8902a888371689307b610cbcab325036743faddd861a70c5405caf2849eed"
+      },
+      "time": "2026-02-27T22:46:22.210Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6e17in-7rwggiy3q5",
+        "action": "FAN_ON",
+        "signature": "7d792102204f59d3ce3bdf362537f0cfc7f8663c14b780f9cb5d238c68513c25"
+      },
+      "time": "2026-02-28T13:59:49.596Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6e29jh-gmincyjr0m4",
+        "action": "FAN_OFF",
+        "signature": "d6ae209c07466be88fffcf27100be52874a130fa092cbb485246554e86044405"
+      },
+      "time": "2026-02-28T14:00:38.864Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6e2oa4-cgl8jbt01ru",
+        "action": "FAN_OFF",
+        "signature": "31a07bfbd4270178e376b6f8c6a46589bd7085f621607da19f2be7d9fdc5ac25"
+      },
+      "time": "2026-02-28T14:00:57.966Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6eay5z-baailo4ma2n",
+        "action": "FAN_ON",
+        "signature": "2f483a7e3fcc397cc44c966a63d6f70cf2d7a59bf01cae82d9bf07779740fde8"
+      },
+      "time": "2026-02-28T14:07:24.038Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6eb01g-fhfxls68epk",
+        "action": "FAN_ON",
+        "signature": "5dfe8444c8d24a1b5b2bb1de3ef5712368766f2aaa92c7cb0a11296e902a2de5"
+      },
+      "time": "2026-02-28T14:07:26.455Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6ebkxl-em7cfqxk7ie",
+        "action": "FAN_ON",
+        "signature": "265537b0021d694f8b46a66c0f5f214cc3a1df1505332b041f99bb33eea4284e"
+      },
+      "time": "2026-02-28T14:07:53.533Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6ebv3o-9fsh52d443h",
+        "action": "FAN_ON",
+        "signature": "0c8146dc3704ed94af763644a5c3c8be91ee1128587ae6649b286b5a33b8ed86"
+      },
+      "time": "2026-02-28T14:08:06.711Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6eh5jb-93yfrobb4x6",
+        "action": "FAN_ON",
+        "signature": "999ea618c4117408ae6485dd208c96886f890c8d69a186ee2b967de5f6255dd2"
+      },
+      "time": "2026-02-28T14:12:13.518Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6et9p0-odejz8jephb",
+        "action": "FAN_ON",
+        "signature": "d6730b66f0ac63c9b674356aeb8ddfbed49bac47648d5e9b15181e8a3699302d"
+      },
+      "time": "2026-02-28T14:21:38.779Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6fd5wb-u06vqxebwge",
+        "action": "FAN_OFF",
+        "signature": "08d96083279eeb168c60df2f41d8c5e737152a584390e5b1fa56b96c908bdf67"
+      },
+      "time": "2026-02-28T14:37:06.975Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6g76lp-v6axdwrfjor",
+        "action": "FAN_ON",
+        "signature": "d122bd5d3a629ac4d9260edb44fbde233cbaebecee13d8803e67017539afa6bc"
+      },
+      "time": "2026-02-28T15:00:27.577Z"
+    },
+    {
+      "event": "COMMAND_SUCCESS",
+      "payload": {
+        "commandId": "mm6g76lp-v6axdwrfjor",
+        "executedAt": "2026-02-28T15:00:27.793Z"
+      },
+      "time": "2026-02-28T15:00:27.794Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6g7ktf-nzrwwfak2rj",
+        "action": "FAN_OFF",
+        "signature": "d7d22f6ecfeef52fa485d04e5f0d357ac7ec9fa64bb8b7b7d1d3b29d6068cf7e"
+      },
+      "time": "2026-02-28T15:00:45.989Z"
+    },
+    {
+      "event": "COMMAND_SUCCESS",
+      "payload": {
+        "commandId": "mm6g7ktf-nzrwwfak2rj",
+        "executedAt": "2026-02-28T15:00:46.002Z"
+      },
+      "time": "2026-02-28T15:00:46.002Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6g9dym-id2e56dvit",
+        "action": "FAN_ON",
+        "signature": "1c0fbc84aa15a2590a6b1c1f97df8b91565f4506f540e25082aab38f84cbf0c1"
+      },
+      "time": "2026-02-28T15:02:10.419Z"
+    },
+    {
+      "event": "COMMAND_SUCCESS",
+      "payload": {
+        "commandId": "mm6g9dym-id2e56dvit",
+        "executedAt": "2026-02-28T15:02:10.433Z"
+      },
+      "time": "2026-02-28T15:02:10.433Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6ga507-1rwmnnnyzpv",
+        "action": "FAN_OFF",
+        "signature": "26fe825da2e4925da5f3ab39a5e313a10ecee4be6769afaa1c297c6c8b02c6e3"
+      },
+      "time": "2026-02-28T15:02:45.471Z"
+    },
+    {
+      "event": "COMMAND_SUCCESS",
+      "payload": {
+        "commandId": "mm6ga507-1rwmnnnyzpv",
+        "executedAt": "2026-02-28T15:02:45.478Z"
+      },
+      "time": "2026-02-28T15:02:45.478Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_001",
+        "commandId": "mm6odovo-l2xjs7n2v7g",
+        "action": "FAN_ON",
+        "signature": "427f08d1c1781cb89b7b0fad593ed82bf5211b92c08e9975a98104b692993f93"
+      },
+      "time": "2026-02-28T18:49:28.126Z"
+    },
+    {
+      "event": "COMMAND_SUCCESS",
+      "payload": {
+        "commandId": "mm6odovo-l2xjs7n2v7g",
+        "executedAt": "2026-02-28T18:49:28.137Z"
+      },
+      "time": "2026-02-28T18:49:28.137Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {},
+      "time": "2026-03-03T13:18:07.711Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {},
+      "time": "2026-03-03T13:23:14.266Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {},
+      "time": "2026-03-03T13:36:45.204Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {},
+      "time": "2026-03-03T13:40:59.522Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {},
+      "time": "2026-03-03T14:06:33.387Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmaowtrh-sjk4zqcz8u"
+      },
+      "time": "2026-03-03T14:15:25.770Z"
+    },
+    {
+      "event": "COMMAND_SUCCESS",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmaowtrh-sjk4zqcz8u",
+        "executedAt": "2026-03-03T14:15:26.080Z"
+      },
+      "time": "2026-03-03T14:15:26.109Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmaqim96-1emmuv5vg4mh"
+      },
+      "time": "2026-03-03T15:00:22.095Z"
+    },
+    {
+      "event": "COMMAND_SUCCESS",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmaqim96-1emmuv5vg4mh",
+        "executedAt": "2026-03-03T15:00:22.412Z"
+      },
+      "time": "2026-03-03T15:00:22.425Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmaqn3i9-alz94ch7pnq"
+      },
+      "time": "2026-03-03T15:03:51.111Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmaqn3i9-alz94ch7pnq"
+      },
+      "time": "2026-03-03T15:04:06.163Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmampvmp-w6g7rxo07lr"
+      },
+      "time": "2026-03-03T21:01:12.704Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmaqn3i9-alz94ch7pnq"
+      },
+      "time": "2026-03-03T21:01:12.794Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmampvmp-w6g7rxo07lr"
+      },
+      "time": "2026-03-03T22:43:28.191Z"
+    },
+    {
+      "event": "COMMAND_ISSUED",
+      "payload": {
+        "deviceId": "esp32_feed_01",
+        "commandId": "mmaqn3i9-alz94ch7pnq"
+      },
+      "time": "2026-03-03T22:43:28.296Z"
+    }
+  ],
+  "commandHistory": {
+    "ESP32-MOCK-1": [
+      {
+        "commandId": "CMD-MOCK-001",
+        "action": "START_FEED",
+        "time": "2026-02-09T08:59:23.300Z"
+      }
+    ],
+    "esp32_001": [
+      {
+        "commandId": "mm5eu15b-hkhzg6waxiv",
+        "action": "FAN_ON",
+        "time": "2026-02-27T21:34:28.193Z"
+      },
+      {
+        "commandId": "mm5f2aen-n80351ibhsp",
+        "action": "FAN_ON",
+        "time": "2026-02-27T21:40:53.427Z"
+      },
+      {
+        "commandId": "mm5gqodl-pg0j8li5zh9",
+        "action": "FAN_ON",
+        "time": "2026-02-27T22:27:50.896Z"
+      },
+      {
+        "commandId": "mm5gr09u-65269509lb9",
+        "action": "FAN_ON",
+        "time": "2026-02-27T22:28:06.310Z"
+      },
+      {
+        "commandId": "mm5grn22-9c4o3pqg03a",
+        "action": "FAN_OFF",
+        "time": "2026-02-27T22:28:35.837Z"
+      },
+      {
+        "commandId": "mm5h7v3k-1grnfrhk8g8",
+        "action": "FAN_ON",
+        "time": "2026-02-27T22:41:12.758Z"
+      },
+      {
+        "commandId": "mm5h890t-i8eqgj86vk",
+        "action": "FAN_ON",
+        "time": "2026-02-27T22:41:30.800Z"
+      },
+      {
+        "commandId": "mm5h8qt6-9ctqazijue5",
+        "action": "FAN_OFF",
+        "time": "2026-02-27T22:41:53.853Z"
+      },
+      {
+        "commandId": "mm5hehvf-tygyksqo8z8",
+        "action": "FAN_ON",
+        "time": "2026-02-27T22:46:22.212Z"
+      },
+      {
+        "commandId": "mm6e17in-7rwggiy3q5",
+        "action": "FAN_ON",
+        "time": "2026-02-28T13:59:49.597Z"
+      },
+      {
+        "commandId": "mm6e29jh-gmincyjr0m4",
+        "action": "FAN_OFF",
+        "time": "2026-02-28T14:00:38.865Z"
+      },
+      {
+        "commandId": "mm6e2oa4-cgl8jbt01ru",
+        "action": "FAN_OFF",
+        "time": "2026-02-28T14:00:57.967Z"
+      },
+      {
+        "commandId": "mm6eay5z-baailo4ma2n",
+        "action": "FAN_ON",
+        "time": "2026-02-28T14:07:24.039Z"
+      },
+      {
+        "commandId": "mm6eb01g-fhfxls68epk",
+        "action": "FAN_ON",
+        "time": "2026-02-28T14:07:26.455Z"
+      },
+      {
+        "commandId": "mm6ebkxl-em7cfqxk7ie",
+        "action": "FAN_ON",
+        "time": "2026-02-28T14:07:53.533Z"
+      },
+      {
+        "commandId": "mm6ebv3o-9fsh52d443h",
+        "action": "FAN_ON",
+        "time": "2026-02-28T14:08:06.711Z"
+      },
+      {
+        "commandId": "mm6eh5jb-93yfrobb4x6",
+        "action": "FAN_ON",
+        "time": "2026-02-28T14:12:13.519Z"
+      },
+      {
+        "commandId": "mm6et9p0-odejz8jephb",
+        "action": "FAN_ON",
+        "time": "2026-02-28T14:21:38.780Z"
+      },
+      {
+        "commandId": "mm6fd5wb-u06vqxebwge",
+        "action": "FAN_OFF",
+        "time": "2026-02-28T14:37:06.976Z"
+      },
+      {
+        "commandId": "mm6g76lp-v6axdwrfjor",
+        "action": "FAN_ON",
+        "time": "2026-02-28T15:00:27.578Z"
+      },
+      {
+        "commandId": "mm6g7ktf-nzrwwfak2rj",
+        "action": "FAN_OFF",
+        "time": "2026-02-28T15:00:45.990Z"
+      },
+      {
+        "commandId": "mm6g9dym-id2e56dvit",
+        "action": "FAN_ON",
+        "time": "2026-02-28T15:02:10.420Z"
+      },
+      {
+        "commandId": "mm6ga507-1rwmnnnyzpv",
+        "action": "FAN_OFF",
+        "time": "2026-02-28T15:02:45.472Z"
+      },
+      {
+        "commandId": "mm6odovo-l2xjs7n2v7g",
+        "action": "FAN_ON",
+        "time": "2026-02-28T18:49:28.127Z"
+      }
+    ],
+    "undefined": [
+      {
+        "time": "2026-03-03T13:18:07.713Z"
+      },
+      {
+        "time": "2026-03-03T13:23:14.267Z"
+      },
+      {
+        "time": "2026-03-03T13:36:45.205Z"
+      },
+      {
+        "time": "2026-03-03T13:40:59.523Z"
+      },
+      {
+        "time": "2026-03-03T14:06:33.389Z"
+      }
+    ],
+    "esp32_feed_01": [
+      {
+        "commandId": "mmaowtrh-sjk4zqcz8u",
+        "time": "2026-03-03T14:15:25.771Z"
+      },
+      {
+        "commandId": "mmaqim96-1emmuv5vg4mh",
+        "time": "2026-03-03T15:00:22.096Z"
+      },
+      {
+        "commandId": "mmaqn3i9-alz94ch7pnq",
+        "time": "2026-03-03T15:03:51.112Z"
+      },
+      {
+        "commandId": "mmaqn3i9-alz94ch7pnq",
+        "time": "2026-03-03T15:04:06.165Z"
+      },
+      {
+        "commandId": "mmampvmp-w6g7rxo07lr",
+        "time": "2026-03-03T21:01:12.707Z"
+      },
+      {
+        "commandId": "mmaqn3i9-alz94ch7pnq",
+        "time": "2026-03-03T21:01:12.796Z"
+      },
+      {
+        "commandId": "mmampvmp-w6g7rxo07lr",
+        "time": "2026-03-03T22:43:28.194Z"
+      },
+      {
+        "commandId": "mmaqn3i9-alz94ch7pnq",
+        "time": "2026-03-03T22:43:28.297Z"
+      }
+    ]
+  }
+}
