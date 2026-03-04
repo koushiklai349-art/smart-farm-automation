@@ -33,3 +33,31 @@ Thumbs.db
 *.a
 *.o
 *.obj
+# node
+node_modules/
+
+# env
+.env
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# build
+build/
+dist/
+
+# ESP32 build
+esp32-firmware/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# vscode
+.vscode/
+
+# runtime files
+persistent.store.json
+audit.store.json
